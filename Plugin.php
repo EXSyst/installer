@@ -19,7 +19,7 @@ use Composer\IO\IOInterface;
 use Composer\Plugin\CommandEvent;
 use Composer\Plugin\PluginEvents;
 use Composer\Plugin\PluginInterface;
-use EXSyst\Installer\Configurator\BundleConfigurator;
+use EXSyst\Installer\Symfony\Configurator\BundleConfigurator;
 
 /**
  * @internal
@@ -74,7 +74,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
         ];
     }
 
-    private function getConfigurators()
+    private function getConfigurators(): array
     {
         if (null === $this->configurators) {
             $this->configurators = [

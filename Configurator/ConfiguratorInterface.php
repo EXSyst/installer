@@ -19,5 +19,5 @@ interface ConfiguratorInterface
      * Configure a package.
      */
     public function configure(Project $project);
-    public function supports(Project $project);
+    public function supports(Project $project): bool;
 }

@@ -1,0 +1,2 @@
+Add the bundle "Dunglas\ActionBundle\DunglasActionBundle" to your kernel "TestKernel" ? [yes]: Dunglas\ActionBundle\DunglasActionBundle has been registered in TestKernel.
+The bundle "Dunglas\ActionBundle\DunglasActionBundle" is already registered in "TestKernel".

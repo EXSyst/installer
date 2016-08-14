@@ -9,8 +9,9 @@
  * file that was distributed with this source code.
  */
 
-namespace EXSyst\Installer\Configurator;
+namespace EXSyst\Installer\Symfony\Configurator;
 
+use EXSyst\Installer\Configurator\ConfiguratorInterface;
 use EXSyst\Installer\Project;
 use EXSyst\Installer\Symfony\KernelFinder;
 use EXSyst\Installer\Symfony\KernelManipulator;
@@ -22,59 +23,61 @@ class BundleConfigurator implements ConfiguratorInterface
 {
     /**
      * {@inheritdoc}
+     *
+     * @return bool true if the bundle is registered in the kernel, false otherwise.
      */
-    public function configure(Project $project)
+    public function configure(Project $project): bool
     {
         $bundle = $this->getBundle($project);
         if (null === $bundle) {
             $io->write('<error>No bundle found.</error>');
 
-            return;
+            return false;
         }
 
         $io = $project->getIO();
         $kernelFinder = new KernelFinder();
-        $kernel = null;
-        foreach ($kernelFinder->findKernels($project) as $kernel) {
-            if (!$io->askConfirmation(sprintf('<info>Add the bundle "%s" to your kernel "%s" ?</info> [<comment>yes</comment>]: ', $bundle, $kernel))) {
-                continue;
-            }
-
-            $kernelManipulator = new KernelManipulator($kernel);
-
-            try {
-                $kernelManipulator->addBundle($bundle);
-                $message = 'has been';
-            } catch (\RuntimeException $e) {
-                $message = 'was already';
-            }
-
-            $io->write(sprintf('<comment>%s</comment> %s registered in <comment>%s</comment>.', $bundle, $message, $kernel));
-        }
-
+        $kernel = $kernelFinder->findKernel($project);
         if (null === $kernel) {
             $io->write('<error>No kernel found.</error>');
         }
+
+        $kernelManipulator = new KernelManipulator($kernel);
+        if ($kernelManipulator->hasBundle($bundle)) {
+            $io->write(sprintf('<info>The bundle "%s" is already registered in "%s".</info>', $bundle, $kernel));
+
+            return true;
+        }
+
+        if (!$io->askConfirmation(sprintf('<info>Add the bundle "%s" to your kernel "%s"?</info> [<comment>yes</comment>]: ', $bundle, $kernel))) {
+            return false;
+        }
+
+        if ($kernelManipulator->addBundle($bundle)) {
+            $message = 'has been registered';
+        } else {
+            $message = 'registration failed';
+        }
+
+        $io->write(sprintf('<comment>%s</comment> %s in <comment>%s</comment>.', $bundle, $message, $kernel));
+
+        return true;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function supports(Project $project)
+    public function supports(Project $project): bool
     {
         $package = $project->getInstalledPackage();
         if ('symfony-bundle' !== $package->getType()) {
             return false;
         }
 
-        // not a symfony project
-        $rootPackage = $project->getRootPackage();
-        $extra = $rootPackage->getExtra();
-        if (!isset($extra['symfony-app-dir'])) {
-            return false;
-        }
+        // symfony project if a kernel can be found
+        $kernelFinder = new KernelFinder();
 
-        return true;
+        return null !== $kernelFinder->findKernel($project);
     }
 
     /**

@@ -26,9 +26,9 @@ final class Project
     private $installedPackagePath;
 
     /**
-     * Should not be instantiated in your code.
+     * @internal
      */
-    private function __construct(Composer $composer, IOInterface $io, PackageInterface $installedPackage)
+    public function __construct(Composer $composer, IOInterface $io, PackageInterface $installedPackage)
     {
         $this->composer = $composer;
         $this->io = $io;
@@ -38,49 +38,34 @@ final class Project
     /**
      * @internal
      */
-    public static function fromPackageEvent(PackageEvent $event)
+    public static function fromPackageEvent(PackageEvent $event): self
     {
         $installedPackage = $event->getOperation()->getPackage();
 
         return new self($event->getComposer(), $event->getIO(), $installedPackage);
     }
 
-    /**
-     * @return IOInterface
-     */
-    public function getIO()
+    public function getIO(): IOInterface
     {
         return $this->io;
     }
 
-    /**
-     * @return RootPackageInterface
-     */
-    public function getRootPackage()
+    public function getRootPackage(): RootPackageInterface
     {
         return $this->composer->getPackage();
     }
 
-    /**
-     * @return string
-     */
-    public function getRootPackagePath()
+    public function getRootPackagePath(): string
     {
         return getcwd();
     }
 
-    /**
-     * @return PackageInterface
-     */
-    public function getInstalledPackage()
+    public function getInstalledPackage(): PackageInterface
     {
         return $this->installedPackage;
     }
 
-    /**
-     * @return string
-     */
-    public function getInstalledPackagePath()
+    public function getInstalledPackagePath(): string
     {
         if (null === $this->installedPackagePath) {
             $installationManager = $this->composer->getInstallationManager();
@@ -90,7 +75,7 @@ final class Project
         return $this->installedPackagePath;
     }
 
-    public function getVendorDir()
+    public function getVendorDir(): string
     {
         return $this->composer->getConfig()->get('vendor-dir', Config::RELATIVE_PATHS);
     }

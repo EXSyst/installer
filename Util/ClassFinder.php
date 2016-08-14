@@ -59,7 +59,7 @@ class ClassFinder
     /**
      * @param string|string[] $files
      *
-     * @return string[]
+     * @return array|\Traversable
      */
     public function getClassesIn($files)
     {
@@ -77,10 +77,13 @@ class ClassFinder
                 continue;
             }
             if (isset($files[$sourceFile])) {
+                if (!isset($classes[$className])) {
+                    yield $className;
+                }
                 $classes[$className] = true;
             }
         }
 
-        return array_keys($classes);
+        return [];
     }
 }

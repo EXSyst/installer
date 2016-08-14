@@ -21,12 +21,8 @@ namespace EXSyst\Installer\Symfony;
 class KernelManipulator extends Manipulator
 {
     protected $reflected;
-    /**
-     * Constructor.
-     *
-     * @param string $kernel
-     */
-    public function __construct($kernel)
+
+    public function __construct(string $kernel)
     {
         $this->reflected = new \ReflectionClass($kernel);
     }
@@ -40,7 +36,7 @@ class KernelManipulator extends Manipulator
      *
      * @throws \RuntimeException If bundle is already defined
      */
-    public function addBundle($bundle)
+    public function addBundle(string $bundle): bool
     {
         if (!$this->getFilename()) {
             return false;
@@ -52,7 +48,7 @@ class KernelManipulator extends Manipulator
 
         // Don't add same bundle twice
         if (false !== strpos(implode('', $lines), $bundle)) {
-            throw new \RuntimeException(sprintf('Bundle "%s" is already defined in "AppKernel::registerBundles()".', $bundle));
+            return false;
         }
 
         $this->setCode(token_get_all('<?php '.implode('', $lines)), $method->getStartLine());
@@ -119,7 +115,17 @@ class KernelManipulator extends Manipulator
         }
     }
 
-    public function getFilename()
+    public function hasBundle(string $bundle): bool
+    {
+        $src = file($this->getFilename());
+        $method = $this->reflected->getMethod('registerBundles');
+        $lines = array_slice($src, $method->getStartLine() - 1, $method->getEndLine() - $method->getStartLine() + 1);
+
+        // Don't add same bundle twice
+        return false !== strpos(implode('', $lines), $bundle);
+    }
+
+    private function getFilename()
     {
         return $this->reflected->getFileName();
     }

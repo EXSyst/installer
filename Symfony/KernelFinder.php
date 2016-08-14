@@ -22,9 +22,9 @@ use Symfony\Component\HttpKernel\KernelInterface;
 class KernelFinder
 {
     /**
-     * @return \Traversable
+     * @return string|null
      */
-    public function findKernels(Project $project)
+    public function findKernel(Project $project)
     {
         $vendorDir = $project->getVendorDir();
 
@@ -35,13 +35,7 @@ class KernelFinder
             ->name('*Kernel.php');
 
         $classFinder = new ClassFinder();
-        $kernels = $classFinder->findClasses($finder, KernelInterface::class);
-        foreach ($kernels as $kernel) {
-            $method = new \ReflectionMethod($kernel, 'registerBundles');
-            // Ensure bundles aren't stored in a parent
-            if ($kernel === $method->getDeclaringClass()->getName()) {
-                yield $kernel;
-            }
-        }
+
+        return $classFinder->findClass($finder, KernelInterface::class);
     }
 }
