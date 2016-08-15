@@ -19,12 +19,24 @@ use Symfony\Component\Finder\Finder;
 class ClassFinder
 {
     /**
-     * @param Finder $finder
-     * @param string $parent A class or interface name
-     *
+     * @return array|\Traversable
+     */
+    public function findClassesFromShortName(string $shortName, Finder $finder, $parent = null)
+    {
+        foreach ($this->findClasses($finder, $parent) as $class) {
+            $reflectionClass = new \ReflectionClass($class);
+            if ($shortName === $reflectionClass->getShortName()) {
+                yield $class;
+            }
+        }
+
+        return [];
+    }
+
+    /**
      * @return string|null
      */
-    public function findClass(Finder $finder, $parent)
+    public function findClass(Finder $finder, string $parent = null)
     {
         foreach ($this->findClasses($finder, $parent) as $class) {
             return $class;
@@ -32,12 +44,9 @@ class ClassFinder
     }
 
     /**
-     * @param Finder $finder
-     * @param string $parent A class or interface name
-     *
      * @return array|\Traversable
      */
-    public function findClasses(Finder $finder, $parent)
+    public function findClasses(Finder $finder, string $parent = null)
     {
         $finder->files();
         foreach ($finder as $file) {
@@ -47,7 +56,7 @@ class ClassFinder
             }
 
             foreach ($this->getClassesIn($sourceFile) as $class) {
-                if (is_subclass_of($class, $parent)) {
+                if (null === $parent || is_subclass_of($class, $parent)) {
                     yield $class;
                 }
             }

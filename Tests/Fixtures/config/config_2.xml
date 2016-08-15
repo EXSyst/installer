@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:dunglas_action="http://example.org/schema/dic/dunglas_action">
+
+   <dunglas_action:config>
+       <dunglas_action:directory>%kernel.root_dir%/../bar/</dunglas_action:directory>
+   </dunglas_action:config>
+
+</container>

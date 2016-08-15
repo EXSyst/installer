@@ -1,0 +1,6 @@
+imports:
+    - { resource: config_2.xml }
+
+dunglas_action:
+    directories:
+        - foo/

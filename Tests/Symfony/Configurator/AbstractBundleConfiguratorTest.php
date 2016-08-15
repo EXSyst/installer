@@ -11,10 +11,10 @@
 
 namespace EXSyst\Installer\Tests\Symfony\Configurator;
 
-use EXSyst\Installer\Tests\AbstractConfiguratorTest;
+use EXSyst\Installer\Tests\ConfiguratorTestCase;
 use TestKernel;
 
-abstract class AbstractBundleConfiguratorTest extends AbstractConfiguratorTest
+abstract class AbstractBundleConfiguratorTest extends ConfiguratorTestCase
 {
     protected function assertBundleIsRegistered(string $bundle)
     {

@@ -24,19 +24,13 @@ use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\StreamOutput;
 
-abstract class AbstractConfiguratorTest extends \PHPUnit_Framework_TestCase
+abstract class TestCase extends \PHPUnit_Framework_TestCase
 {
-    const CONFIGURATOR = null;
-
     protected static $fixturesDir = __DIR__.'/Fixtures';
-    protected $configurator;
 
     protected function setUp()
     {
         file_put_contents(static::$fixturesDir.'/TestKernel.php', file_get_contents(static::$fixturesDir.'/TestKernel.php.dist'));
-
-        $class = static::CONFIGURATOR;
-        $this->configurator = new $class();
     }
 
     protected function getProject(string $installedPackage, string $interaction = ''): array
