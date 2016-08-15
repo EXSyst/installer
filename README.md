@@ -6,7 +6,7 @@ This composer plugin allows to quickly register symfony bundles into your app.
 
 Execute the following command in a terminal:
 ```console
-$ composer global require exsyst/installer 0.0.x-dev
+$ composer global require exsyst/installer
 ```
 And that's all, the plugin is working!
 
