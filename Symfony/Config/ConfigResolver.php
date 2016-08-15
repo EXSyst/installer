@@ -1,9 +1,9 @@
 <?php
 
 /*
- * This file is part of the Symfony package.
+ * This file is part of the Installer package.
  *
- * (c) Fabien Potencier <fabien@symfony.com>
+ * (c) EXSyst
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -50,13 +50,13 @@ class ConfigResolver
     private function getLoader(ContainerBuilder $container, Project $project)
     {
         $locator = new FileLocator($project);
-        $resolver = new LoaderResolver(array(
+        $resolver = new LoaderResolver([
             new XmlFileLoader($container, $locator),
             new YamlFileLoader($container, $locator),
             new IniFileLoader($container, $locator),
             new PhpFileLoader($container, $locator),
             new DirectoryLoader($container, $locator),
-        ));
+        ]);
 
         return new DelegatingLoader($resolver);
     }
@@ -79,7 +79,7 @@ class ExtensionAwareContainerBuilder extends ContainerBuilder
     /**
      * {@inheritdoc}
      */
-    public function loadFromExtension($extension, array $values = array())
+    public function loadFromExtension($extension, array $values = [])
     {
         if ($this->isFrozen()) {
             throw new \LogicException('Cannot load from an extension on a frozen container.');
@@ -107,12 +107,7 @@ class ExtensionAwareContainerBuilder extends ContainerBuilder
      */
     public function getExtension($name)
     {
-        return new class {
-            public function getXsdValidationBasePath()
-            {
-                return false;
-            }
-        };
+        return new Extension();
     }
 
     public function getConfigs()
@@ -143,5 +138,16 @@ class DummyParameterBag extends ParameterBag
     public function resolveValue($value)
     {
         return $value;
+    }
+}
+
+/**
+ * @internal
+ */
+class Extension
+{
+    public function getXsdValidationBasePath()
+    {
+        return false;
     }
 }

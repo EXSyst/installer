@@ -1,9 +1,9 @@
 <?php
 
 /*
- * This file is part of the Symfony package.
+ * This file is part of the Installer package.
  *
- * (c) Fabien Potencier <fabien@symfony.com>
+ * (c) EXSyst
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,7 +17,6 @@ use Symfony\Component\Config\FileLocator as BaseFileLocator;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Symfony\Component\HttpKernel\Kernel;
-use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
  * FileLocator using the class finder to locate bundle resources.
@@ -60,7 +59,7 @@ class FileLocator extends BaseFileLocator
         $overridePath = substr($path, 9);
         $resourceBundle = null;
         $bundles = $this->getBundle($bundleName, false);
-        $files = array();
+        $files = [];
 
         foreach ($bundles as $bundle) {
             if ($isResource && file_exists($file = $dir.'/'.$bundle->getName().$overridePath)) {
@@ -117,7 +116,8 @@ class Bundle
     private $class;
     private $name;
 
-    public function __construct(string $class, string $name) {
+    public function __construct(string $class, string $name)
+    {
         $this->class = $class;
         $this->name = $name;
     }

@@ -11,19 +11,6 @@
 
 namespace EXSyst\Installer\Tests;
 
-use Composer\Composer;
-use Composer\Factory;
-use Composer\IO\ConsoleIO;
-use Composer\IO\IOInterface;
-use EXSyst\Installer\Project;
-use Symfony\Component\Console\Helper\DebugFormatterHelper;
-use Symfony\Component\Console\Helper\HelperSet;
-use Symfony\Component\Console\Helper\FormatterHelper;
-use Symfony\Component\Console\Helper\ProcessHelper;
-use Symfony\Component\Console\Helper\QuestionHelper;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\StreamOutput;
-
 abstract class ConfiguratorTestCase extends TestCase
 {
     const CONFIGURATOR = null;

@@ -27,7 +27,6 @@ class FileLocatorTest extends TestCase
     public function testLocateWithCurrentDir()
     {
         $this->assertPathEquals(self::$fixturesDir.'/DunglasActionBundle/foo.txt', $this->locator->locate('@DunglasActionBundle/Resources/foo.txt', self::$fixturesDir));
-
     }
 
     protected function setUp()
