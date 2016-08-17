@@ -22,17 +22,17 @@ final class Project
 {
     private $composer;
     private $io;
-    private $installedPackage;
-    private $installedPackagePath;
+    private $configuredPackage;
+    private $configuredPackagePath;
 
     /**
      * @internal
      */
-    public function __construct(Composer $composer, IOInterface $io, PackageInterface $installedPackage)
+    public function __construct(Composer $composer, IOInterface $io, PackageInterface $configuredPackage)
     {
         $this->composer = $composer;
         $this->io = $io;
-        $this->installedPackage = $installedPackage;
+        $this->configuredPackage = $configuredPackage;
     }
 
     /**
@@ -60,19 +60,19 @@ final class Project
         return getcwd();
     }
 
-    public function getInstalledPackage(): PackageInterface
+    public function getConfiguredPackage(): PackageInterface
     {
-        return $this->installedPackage;
+        return $this->configuredPackage;
     }
 
-    public function getInstalledPackagePath(): string
+    public function getConfiguredPackagePath(): string
     {
-        if (null === $this->installedPackagePath) {
+        if (null === $this->configuredPackagePath) {
             $installationManager = $this->composer->getInstallationManager();
-            $this->installedPackagePath = $installationManager->getInstallPath($this->installedPackage);
+            $this->configuredPackagePath = $installationManager->getInstallPath($this->configuredPackage);
         }
 
-        return $this->installedPackagePath;
+        return $this->configuredPackagePath;
     }
 
     public function getVendorDir(): string

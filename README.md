@@ -12,11 +12,11 @@ And that's all, the plugin is working!
 
 ## How to use it?
 
-Each time you will require a symfony bundle, the plugin will detect it and ask if you want to configure it:
+The plugin provides a composer command:
 ```console
-~/my-symfony-app $ composer require friendsofsymfony/rest-bundle
+~/my-symfony-app $ composer configure friendsofsymfony/rest-bundle
 Configure "friendsofsymfony/rest-bundle"? [no]: y
-Add the bundle "FOS\RestBundle\FOSRestBundle" to your kernel "AppKernel"? [yes]: 
+Add the bundle "FOS\RestBundle\FOSRestBundle" to your kernel "AppKernel"? [yes]:
 FOS\RestBundle\FOSRestBundle has been registered in AppKernel.
 ```
 

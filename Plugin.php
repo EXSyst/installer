@@ -12,78 +12,23 @@
 namespace EXSyst\Installer;
 
 use Composer\Composer;
-use Composer\EventDispatcher\EventSubscriberInterface;
-use Composer\Installer\PackageEvent;
-use Composer\Installer\PackageEvents;
 use Composer\IO\IOInterface;
-use Composer\Plugin\CommandEvent;
-use Composer\Plugin\PluginEvents;
+use Composer\Plugin\Capable;
 use Composer\Plugin\PluginInterface;
-use EXSyst\Installer\Symfony\Configurator\BundleConfigurator;
-use EXSyst\Installer\Symfony\Configurator\DunglasActionConfigurator;
 
 /**
  * @internal
  */
-class Plugin implements PluginInterface, EventSubscriberInterface
+class Plugin implements PluginInterface, Capable
 {
-    private $enabled = false;
-    private $configurators;
-
     public function activate(Composer $composer, IOInterface $io)
     {
-        $this->enabled = true;
     }
 
-    public function onCommand(CommandEvent $event)
-    {
-        if ('require' !== $event->getCommandName()) {
-            $this->enabled = false;
-        }
-    }
-
-    public function onPostPackageInstall(PackageEvent $event)
-    {
-        if (!$this->enabled) {
-            return;
-        }
-
-        $io = $event->getIO();
-        $project = Project::fromPackageEvent($event);
-        $installedPackage = $project->getInstalledPackage();
-        foreach ($this->getConfigurators() as $configurator) {
-            if ($configurator->supports($project)) {
-                if ($io->askConfirmation(sprintf('<info>Configure "%s"?</info> [<comment>no</comment>]: ', $installedPackage->getName()), false)) {
-                    $configurator->configure($project);
-                    $io->write('');
-                } else {
-                    $io->write([sprintf('Installation of "%s" skipped.', $installedPackage->getName()), '']);
-                }
-
-                return;
-            }
-        }
-
-        $io->write([sprintf('No configurator found for "%s".', $installedPackage->getName()), '']);
-    }
-
-    public static function getSubscribedEvents()
+    public function getCapabilities()
     {
         return [
-            PluginEvents::COMMAND => 'onCommand',
-            PackageEvents::POST_PACKAGE_INSTALL => 'onPostPackageInstall',
+            'Composer\Plugin\Capability\CommandProvider' => 'EXSyst\Installer\CommandProvider',
         ];
-    }
-
-    private function getConfigurators(): array
-    {
-        if (null === $this->configurators) {
-            $this->configurators = [
-                new DunglasActionConfigurator(),
-                new BundleConfigurator(),
-            ];
-        }
-
-        return $this->configurators;
     }
 }

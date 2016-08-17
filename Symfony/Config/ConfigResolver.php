@@ -33,7 +33,7 @@ class ConfigResolver
 {
     private $loader;
 
-    public function getConfig(string $configFile, ConfigurationExtensionInterface $extension, Project $project)
+    public function getConfig(Project $project, ConfigurationExtensionInterface $extension, string $configFile)
     {
         $container = new ExtensionAwareContainerBuilder($extension);
         $loader = $this->getLoader($container, $project);

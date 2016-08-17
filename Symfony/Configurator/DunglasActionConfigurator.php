@@ -15,19 +15,22 @@ use Dunglas\ActionBundle\DependencyInjection\DunglasActionExtension;
 use EXSyst\Installer\Project;
 use Symfony\Component\DependencyInjection\Extension\ConfigurationExtensionInterface;
 
-class DunglasActionConfigurator extends BundleConfigurator
+/**
+ * @internal
+ */
+final class DunglasActionConfigurator extends BundleConfigurator
 {
     /**
      * {@inheritdoc}
      */
-    public function configure(Project $project): bool
+    public function configure(Project $project)
     {
         if (!parent::configure($project)) {
-            return false;
+            return;
         }
 
         if (!$this->shouldBeConfigured($project)) {
-            return true;
+            return;
         }
 
         $io = $project->getIO();
@@ -51,12 +54,15 @@ class DunglasActionConfigurator extends BundleConfigurator
                     break;
                 }
             }
-
-            $config = $this->getConfig($project);
-            $config['directories'] = $directories;
-
-            $this->saveConfig($config, $project);
         }
+
+        $config = $this->getConfig($project);
+        // If not already the current config
+        if ($directories !== $appConfig['directories']) {
+            $config['directories'] = $directories;
+        }
+
+        $this->saveConfig($config, $project);
     }
 
     /**
@@ -64,7 +70,7 @@ class DunglasActionConfigurator extends BundleConfigurator
      */
     public function supports(Project $project): bool
     {
-        $package = $project->getInstalledPackage();
+        $package = $project->getConfiguredPackage();
 
         return 'dunglas/action-bundle' === $package->getName() && parent::supports($project);
     }
