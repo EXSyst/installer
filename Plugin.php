@@ -20,6 +20,7 @@ use Composer\Plugin\CommandEvent;
 use Composer\Plugin\PluginEvents;
 use Composer\Plugin\PluginInterface;
 use EXSyst\Installer\Symfony\Configurator\BundleConfigurator;
+use EXSyst\Installer\Symfony\Configurator\DunglasActionConfigurator;
 
 /**
  * @internal
@@ -78,6 +79,7 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     {
         if (null === $this->configurators) {
             $this->configurators = [
+                new DunglasActionConfigurator(),
                 new BundleConfigurator(),
             ];
         }
